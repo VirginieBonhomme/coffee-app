@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Perfect Pour </title>
+  <style>
+    :root {
+      --primary-color: #664422;
+      --bg-color: #f5f5f5;
+      --text-color: #333;
+      --card-bg: #fff;
+      --accent-bg: #eee;
+      --border-color: #ccc;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.4em;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    header .logo {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-size: 1.5em;
+      margin: 0;
+      color: var(--primary-color);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    nav {
+      background: var(--accent-bg);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1em;
+      color: var(--text-color);
+      border-right: 1px solid var(--border-color);
+      transition: background 0.2s;
+      flex: 1 1 auto;
+      text-align: center;
+    }
+
+    nav button:hover, nav button.active {
+      background: #ddd;
+    }
+
+    main {
+      padding: 20px;
+      box-sizing: border-box;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1 0 auto;
+    }
+
+    #homeSection, #learningSection, #testingSection {
+      display: none;
+    }
+
+    .drink-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 20px;
+    }
+
+    .drink-card {
+      background: var(--card-bg);
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .drink-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .drink-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .drink-card h2 {
+      font-size: 1em;
+      margin: 10px 0 5px;
+      color: #444;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left:0;
+      width: 100%;
+      height:100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content:center;
+      align-items:center;
+      z-index: 999;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .modal {
+      background: #fff;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 6px;
+      padding: 20px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      line-height: 1em;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      color: #444;
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      color: var(--primary-color);
+      font-size: 1.2em;
+      overflow-wrap: break-word;
+    }
+
+    .drink-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  border-radius: 4px;
+  object-fit: cover; /* Change to 'contain' if you don't want cropping */
+}
+
+    .ratio-container, .steps-container, .tips-container, .video-container {
+      margin-bottom: 20px;
+    }
+
+    .steps-container ol, .tips-container ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .steps-container li, .tips-container li {
+      margin-bottom: 10px;
+    }
+
+    .video-container a {
+      color: #007acc;
+      text-decoration: none;
+    }
+
+    .video-container a:hover {
+      text-decoration: underline;
+    }
+
+    .comparison-container {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .comparison-container h2 {
+      margin-top: 0;
+      color: var(--primary-color);
+      text-align: center;
+      font-size: 1.3em;
+    }
+
+    .compare-selects {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .compare-selects select {
+      flex: 1;
+      padding: 5px;
+      font-size: 1em;
+    }
+
+    .compare-results {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .drink-compare-card {
+      background: #fafafa;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 15px;
+    }
+
+    .drink-compare-card h3 {
+      margin-top: 0;
+      color: #555;
+      font-size: 1.1em;
+    }
+
+    .quiz-container {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .quiz-container h2 {
+      margin-top: 0;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 1.3em;
+    }
+
+    .quiz-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-choices button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: #f0f0f0;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+      font-size: 1em;
+      text-align: center;
+    }
+
+    .quiz-choices button:hover {
+      background: #e0e0e0;
+    }
+
+    .quiz-feedback {
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 1em;
+    }
+
+    footer {
+      background: #fff;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+      color: #777;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.2em;
+      }
+      nav button {
+        font-size: 0.9em;
+        padding: 8px 10px;
+      }
+      .drink-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 10px;
+      }
+      .drink-card {
+        padding: 10px;
+      }
+      .drink-card h2 {
+        font-size: 0.9em;
+      }
+      .quiz-container, .comparison-container {
+        padding: 15px;
+      }
+      .drink-icon {
+        font-size: 1.5em;
+      }
+    }
+
+    @media (min-width: 601px) and (max-width: 900px) {
+      .drink-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Perfect Pour ☕</h1>
+  </header>
+
+  <nav>
+    <button id="homeTab">Home</button>
+    <button id="learningTab">Learning</button>
+    <button id="testingTab">Testing</button>
+  </nav>
+
+  <main>
+    <!-- Home Section -->
+    <section id="homeSection">
+      <p>This is <strong>The Perfect Pour</strong>, your go-to resource for mastering the art of coffee-making. Explore our curated selection of specialty drinks and learn everything from the perfect espresso pull to creating velvety microfoam. Whether you’re new to the craft or sharpening your skills, this hub helps you discover new techniques, flavor profiles, and innovative beverages.</p>
+      <div class="drink-grid"></div>
+    </section>
+
+    <!-- Learning Section: Comparison Tool -->
+    <section id="learningSection">
+      <p>Welcome to the <strong>Learning</strong> section, where you can deepen your understanding and refine your technique. Compare two drinks side-by-side to notice subtle differences in ratios, preparation steps, and flavor nuances. Gain confidence in your craft as you learn what sets each beverage apart and how to recreate them perfectly.</p>
+      <div class="comparison-container">
+        <h2>Compare Two Drinks</h2>
+        <div class="compare-selects">
+          <select id="compareSelect1">
+            <option value="">Select Drink 1</option>
+          </select>
+          <select id="compareSelect2">
+            <option value="">Select Drink 2</option>
+          </select>
+        </div>
+        <div class="compare-results" id="compareResults"></div>
+      </div>
+    </section>
+
+    <!-- Testing Section: Quiz -->
+    <section id="testingSection">
+      <p>Ready to put your knowledge to the test? The <strong>Testing</strong> section challenges you with a 15-question quiz covering various drinks, ratios, and preparation methods. This is your chance to gauge your progress, reinforce what you’ve learned, and identify areas for improvement. Earn your barista stripes and have fun learning along the way.</p>
+      <div class="quiz-container">
+      <div class="quiz-container">
+        <h2>Coffee Quiz</h2>
+        <p id="quizQuestion"></p>
+        <div class="quiz-choices" id="quizChoices"></div>
+        <div class="quiz-feedback" id="quizFeedback"></div>
+        <button id="nextQuestionBtn" style="margin-top:20px;">Next Question</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="close-button" id="closeBtn" aria-label="Close">&times;</button>
+      <h2 class="drink-name" id="drinkName"></h2>
+      <img src="" alt="" class="drink-image" id="drinkImage" style="display:none;">
+      <div class="ratio-container">
+        <h3>Ratio/Ingredients:</h3>
+        <p id="drinkRatio"></p>
+      </div>
+      <div class="steps-container">
+        <h3>Steps:</h3>
+        <ol id="drinkSteps"></ol>
+      </div>
+      <div class="tips-container">
+        <h3>Tips:</h3>
+        <ul id="drinkTips"></ul>
+      </div>
+      <div class="video-container" id="videoContainer" style="display:none;">
+        <h3>Watch Video:</h3>
+        <p><a href="#" target="_blank" id="videoLink">View on YouTube</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © 2024 Bonhomme Artistries. All rights reserved.
+  </footer>
+
+  <script>
+    const drinksData = [
+      {
+        name: "Double Shot Espresso",
+        icon: "☕",
+        image: "https://previews.dropbox.com/p/thumb/ACdYd-P0skWIKQ-CD2__aqGBIceeFnrXAtl8ESn2I9DaZGpy9Uwo855LyHFtP7hFQlG7ISpDlxaIZ1BjeuE8hCTC5eYqzIdKJaTNdx7LXkPz3V-poZOaZnSjU_E0WWDcoABwBbIzcm2QvVLoBtvAof9kmGoaeEJgQEUQIDntQqXpj_jb6tCaqsO7u3clhuGKmUKig2HdkRB5OP9G23Y8t7AI5O7Y7SM6DPZCfXi8CycEb02UEDmmKz0uNm5aRSUIKaMTqeQ5nQNh0uNcY5lFwgu2awOGRdE9I99R3UKSpr0HTIvL-YaMa1hn0jztyf6sv6PQnYmBqYX7IpOD4GYA9yHL/p.png",
+        ratio: "Double espresso shot (~2 oz total)",
+        steps: [
+          "Grind fresh coffee beans to a fine espresso grind.",
+          "Pull a double espresso shot (~2 oz) in 20-30 seconds.",
+          "Serve in a demitasse cup."
+        ],
+        tips: [
+          "Use freshly roasted beans.",
+          "Adjust grind and tamp for proper extraction.",
+          "Aim for a rich, crema-topped espresso."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=double+espresso+pull"
+      },
+      {
+        name: "Latte",
+        icon: "☕",
+        image: "https://www.caffesociety.co.uk/assets/recipe-images/latte-small.jpg",
+        ratio: "Double espresso, ~8 oz steamed milk, thin layer of foam",
+        steps: [
+          "Pull a fresh double espresso shot.",
+          "Steam milk to a silky, velvety texture (140-150°F).",
+          "Pour steamed milk into espresso, finishing with a thin layer of microfoam."
+        ],
+        tips: [
+          "Aim for smooth, creamy milk texture.",
+          "Try latte art if time allows.",
+          "Don't overheat the milk."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+a+latte"
+      },
+      {
+        name: "Cappuccino",
+        icon: "☕",
+        image: "https://www.allrecipes.com/thmb/BmpkR1pEH4WBzHgoH-oMQloHZi8=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/8624835-how-to-make-a-cappuccino-beauty-4x3-0301-13d55eaad60b42058f24369c292d4ccb.jpg",
+        ratio: "Double espresso, equal parts milk and foam (~1/3 each)",
+        steps: [
+          "Pull a fresh double espresso shot.",
+          "Steam milk until thick, airy foam forms.",
+          "Pour foamed milk into espresso so there's a noticeable foam layer on top."
+        ],
+        tips: [
+          "Cappuccino is foamier than a latte.",
+          "Keep foam dense and creamy.",
+          "Serve quickly."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+a+cappuccino"
+      },
+      {
+        name: "Flat White",
+        icon: "☕",
+        image: "https://cdn.shopify.com/s/files/1/2412/4335/files/tasty-coffee-white-cup_480x480.jpg?v=1625675598",
+        ratio: "Double espresso, ~6 oz steamed milk with fine microfoam",
+        steps: [
+          "Pull a fresh double espresso shot.",
+          "Steam milk to a velvety microfoam.",
+          "Pour milk to create a smooth, flat surface."
+        ],
+        tips: [
+          "Less foam than a latte.",
+          "Focus on silky texture.",
+          "Serve in a smaller cup."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+a+flat+white"
+      },
+      {
+        name: "Macchiato",
+        icon: "☕",
+        image: "https://www.nespresso.com/ncp/res/uploads/recipes/nespresso-recipes-Espresso-Macchiato-by-Nespresso.jpg",
+        ratio: "Double espresso 'marked' with a small dollop of foam",
+        steps: [
+          "Pull a double espresso shot.",
+          "Top with a small spoonful of milk foam.",
+          "Serve in a small cup."
+        ],
+        tips: [
+          "Mostly espresso with a hint of foam.",
+          "Not the same as latte macchiato.",
+          "Highlight espresso flavor."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+a+macchiato"
+      },
+      {
+        name: "Matcha",
+        icon: "🍵",
+        image: "https://hips.hearstapps.com/thepioneerwoman/wp-content/uploads/2016/11/how-to-make-a-matcha-latte-01.jpg?resize=1024:*",
+        ratio: "1-2 tsp matcha, small amount hot water, steamed milk",
+        steps: [
+          "Sift matcha into a bowl.",
+          "Whisk with hot water until smooth (no lumps).",
+          "Steam milk and pour into the matcha, creating a vibrant green beverage."
+        ],
+        tips: [
+          "Sift matcha to avoid clumps.",
+          "Use slightly cooler water than boiling.",
+          "Adjust matcha amount for desired strength."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+matcha+latte"
+      },
+      {
+        name: "Drip Coffee",
+        icon: "🫘",
+        image: "https://blogstudio.s3.theshoppad.net/coffeeheroau/5ea0bef16e9975538e9421d283fb87e2.jpg",
+        ratio: "1:16 coffee-to-water (e.g., 20g coffee to 320ml water)",
+        steps: [
+          "Measure and grind coffee to medium grind.",
+          "Load filter and coffee into drip machine.",
+          "Start brew and serve fresh."
+        ],
+        tips: [
+          "Use fresh, high-quality beans.",
+          "Ensure filter is properly placed.",
+          "Clean equipment regularly."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+drip+coffee"
+      },
+      {
+        name: "Cold Brew",
+        icon: "🧊",
+        image: "https://www.eatingwell.com/thmb/4q1S2-lKMKCY-VHMgDt4FDrdbVw=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/How-to-Make-Cold-Brew-Coffee-b4af3ec355b642e78bb79e18991a0da0.jpg",
+        ratio: "1:8 coffee-to-water, coarsely ground",
+        steps: [
+          "Combine coarse ground coffee with cold water in a container.",
+          "Steep in the refrigerator for 12-24 hours.",
+          "Strain and serve over ice."
+        ],
+        tips: [
+          "Experiment with steep time for flavor strength.",
+          "Use coarse grind to avoid bitterness.",
+          "Keep a batch ready before rush hours."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+cold+brew"
+      },
+      {
+        name: "Mocha",
+        icon: "🍫",
+        image: "https://131252960.cdn6.editmysite.com/uploads/1/3/1/2/131252960/s473094338909309157_p7_i3_w1920.jpeg?width=2400&optimize=medium",
+        ratio: "Double espresso, ~8 oz milk, chocolate syrup",
+        steps: [
+          "Pull double espresso.",
+          "Add chocolate syrup to the cup.",
+          "Pour espresso over syrup and stir gently.",
+          "Steam milk and pour into the cup for a rich, chocolatey drink."
+        ],
+        tips: [
+          "Use a high-quality chocolate syrup.",
+          "Adjust chocolate amount for sweetness.",
+          "Try a dusting of cocoa powder on top."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+a+mocha"
+      },
+      {
+        name: "Cortado",
+        icon: "🥛",
+        image: "https://www.foodandwine.com/thmb/KzfhJG9naqoKK6ubunTvOp1GhiU=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Partners-Cortado-FT-BLOG0523-7e4f50be961e4a6490fdfa5a34d6e0f5.jpg",
+        ratio: "Double espresso, ~equal amount of steamed milk (1:1)",
+        steps: [
+          "Pull a fresh double espresso shot.",
+          "Steam milk with minimal foam; aim for warm, silky milk.",
+          "Combine equal parts espresso and milk in a small glass."
+        ],
+        tips: [
+          "Focus on equal parts espresso and milk.",
+          "Serve in a small glass for authenticity.",
+          "Keep milk just warm, not super hot."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+a+cortado"
+      },
+      {
+        name: "Gibraltar",
+        icon: "🥃",
+        image: "https://www.acouplecooks.com/wp-content/uploads/2021/08/Gibraltar-Coffee-003.jpg",
+        ratio: "Double espresso, ~2 oz steamed milk",
+        steps: [
+          "Pull a fresh double espresso shot.",
+          "Steam a small amount of milk to a smooth microfoam.",
+          "Pour milk into espresso in a small Gibraltar glass."
+        ],
+        tips: [
+          "Similar to a Cortado but often served in a specific glass.",
+          "Focus on balance and smoothness.",
+          "Serve promptly at a warm, drinkable temperature."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+a+gibraltar+coffee"
+      },
+      {
+        name: "Café au Lait",
+        icon: "🥛",
+        image: "https://coolbrew.com/wp-content/uploads/HotCAL.jpg",
+        ratio: "Brewed coffee and steamed milk (usually ~1:1)",
+        steps: [
+          "Brew fresh drip coffee.",
+          "Steam or heat milk.",
+          "Combine roughly equal parts coffee and milk."
+        ],
+        tips: [
+          "Use strong coffee for better flavor balance.",
+          "Adjust milk-to-coffee ratio to taste.",
+          "No foam required, just warm milk."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+cafe+au+lait"
+      },
+      {
+        name: "Ristretto",
+        icon: "☕",
+        image: "https://blogstudio.s3.theshoppad.net/coffeeheroau/10897ed60052f2aa1a495aa1c02a8ce6.jpg",
+        ratio: "A shorter, more concentrated double espresso (~1.5 oz)",
+        steps: [
+          "Pull a shorter shot than espresso by stopping extraction early.",
+          "Serve in a demitasse cup."
+        ],
+        tips: [
+          "Sweeter, more concentrated flavor than a full espresso.",
+          "Time extraction carefully (~15-20 seconds).",
+          "Use fresh beans for best flavor."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+ristretto"
+      },
+      {
+        name: "Affogato",
+        icon: "🍦",
+        image: "https://www.thespruceeats.com/thmb/T9QWZRgAyCIEdSh92z_XOl9kvkM=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/affogato-4776668-hero-08-40d7a68d12ba46f48eaea3c43aba715c.jpg",
+        ratio: "Double espresso poured over a scoop of vanilla gelato",
+        steps: [
+          "Place a scoop of high-quality vanilla gelato in a small bowl.",
+          "Pull a fresh double espresso shot.",
+          "Pour the hot espresso over the gelato."
+        ],
+        tips: [
+          "Serve immediately so gelato partially melts.",
+          "Use premium gelato for a richer taste.",
+          "A simple, elegant dessert beverage."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+affogato"
+      },
+      {
+        name: "Chai Latte",
+        icon: "🍵",
+        image: "https://www.anightowlblog.com/wp-content/uploads/2021/01/Torani-French-Vanilla-Chai-Latte-6.jpg",
+        ratio: "Concentrated chai tea, steamed milk, sweetener to taste",
+        steps: [
+          "Brew a strong chai concentrate (tea + spices).",
+          "Steam milk to a silky texture.",
+          "Combine chai concentrate and milk, sweeten as desired."
+        ],
+        tips: [
+          "Use fresh spice mix or quality chai concentrate.",
+          "Adjust sweetness to preference.",
+          "Top with cinnamon for aroma."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+chai+latte"
+      },
+      {
+        name: "London Fog",
+        icon: "🍵",
+        image: "https://www.redpathsugar.com/sites/redpathsugar_com/files/styles/m/public/2023-02/London_Fog_Latte-600x400.jpg.webp?itok=7oBIJ5HK",
+        ratio: "Earl Grey tea, steamed milk, vanilla syrup",
+        steps: [
+          "Brew Earl Grey tea.",
+          "Steam milk until velvety.",
+          "Add vanilla syrup and combine with tea."
+        ],
+        tips: [
+          "Quality Earl Grey and proper steeping time enhance flavor.",
+          "Adjust sweetness with vanilla syrup.",
+          "Serve warm and soothing."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+london+fog"
+      },
+      {
+        name: "Turkish Coffee",
+        icon: "☕",
+        image: "https://cdn-gaecj.nitrocdn.com/JMwuRIbFKRytZpZBQQGkRvqmTfGyKhHA/assets/images/optimized/rev-d86589f/turkeytravelplanner.com/wp-content/uploads/2024/08/Turkish-Coffee-scaled-e1723987225409.jpg",
+        ratio: "Finely ground coffee, water, sugar (optional) boiled in an ibrik",
+        steps: [
+          "Use extra-fine coffee grounds.",
+          "Combine coffee and water (and sugar if desired) in an ibrik.",
+          "Heat until it foams, remove from heat, repeat gently 2-3 times.",
+          "Serve unfiltered in small cups."
+        ],
+        tips: [
+          "Do not let it fully boil; gentle heating is key.",
+          "Let grounds settle before sipping.",
+          "Rich, intense flavor."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+turkish+coffee"
+      },
+      {
+        name: "Irish Coffee",
+        icon: "🥃",
+        image: "https://www.happyfoodstube.com/wp-content/uploads/2020/03/irish-coffee-picture.jpg",
+        ratio: "Hot coffee, Irish whiskey, sugar, topped with whipped cream",
+        steps: [
+          "Preheat a glass mug with hot water.",
+          "Add hot coffee, Irish whiskey, and sugar, stir.",
+          "Top with lightly whipped cream, served hot."
+        ],
+        tips: [
+          "Use quality Irish whiskey.",
+          "Lightly whip cream so it floats on top.",
+          "A warming, boozy treat."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+irish+coffee"
+      },
+      {
+        name: "Red Eye",
+        icon: "👀",
+        image: "https://132673368.cdn6.editmysite.com/uploads/1/3/2/6/132673368/s145104139500659679_p194_i1_w1920.jpeg?width=2400&optimize=medium",
+        ratio: "Drip coffee + espresso shot",
+        steps: [
+          "Brew a cup of strong drip coffee.",
+          "Pull a single or double espresso shot.",
+          "Pour espresso into coffee for extra caffeine kick."
+        ],
+        tips: [
+          "Great for those needing a strong caffeine boost.",
+          "Adjust ratio for desired strength.",
+          "Serve hot and fresh."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+red+eye+coffee"
+      },
+      // Iced Beverages
+      {
+        name: "Iced Latte",
+        icon: "🧊",
+        image: "https://buildyourbite.com/wp-content/uploads/2024/04/Iced-Latte-Recipe-59.jpg",
+        ratio: "Double espresso, cold milk, ice",
+        steps: [
+          "Pull a fresh double espresso shot.",
+          "Fill a glass with ice.",
+          "Pour cold milk over ice, then add espresso.",
+          "Stir gently."
+        ],
+        tips: [
+          "Use chilled milk.",
+          "Adjust ice and milk for desired strength.",
+          "Serve with a straw."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+iced+latte"
+      },
+      {
+        name: "Iced Americano",
+        icon: "🧊",
+        image: "https://littlebitrecipes.com/wp-content/uploads/2023/07/iced-americano-l.jpg",
+        ratio: "Double espresso, cold water, ice",
+        steps: [
+          "Pull a double espresso shot.",
+          "Fill a glass with ice.",
+          "Pour cold water over ice, then add espresso on top.",
+          "Stir gently."
+        ],
+        tips: [
+          "Keep water cold to maintain flavor.",
+          "Adjust espresso strength to taste.",
+          "Simple and refreshing."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+iced+americano"
+      },
+      {
+        name: "Iced Mocha",
+        icon: "🧊🍫",
+        image: "https://vibrantlygfree.com/wp-content/uploads/2023/07/iced-mocha-1.jpg",
+        ratio: "Double espresso, chocolate syrup, cold milk, ice",
+        steps: [
+          "Pull a double espresso.",
+          "Add chocolate syrup to glass.",
+          "Add ice, pour cold milk, then espresso.",
+          "Stir well."
+        ],
+        tips: [
+          "Use quality chocolate syrup.",
+          "Sweeten to taste.",
+          "Top with whipped cream if desired."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+iced+mocha"
+      },
+      {
+        name: "Iced Chai Latte",
+        icon: "🧊🍵",
+        image: "https://valentinascorner.com/wp-content/uploads/2022/09/Iced-Chai-Latte-Recipe-7.jpg",
+        ratio: "Chai concentrate, cold milk, ice",
+        steps: [
+          "Brew strong chai concentrate and chill.",
+          "Fill glass with ice.",
+          "Pour cold milk and chai concentrate over ice.",
+          "Stir and sweeten if desired."
+        ],
+        tips: [
+          "Use a high-quality chai concentrate.",
+          "Adjust milk and sweetness to taste.",
+          "Refreshing and spiced."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+iced+chai+latte"
+      },
+      {
+        name: "Iced Matcha Latte",
+        icon: "🧊🍵",
+        image: "https://www.foodandwine.com/thmb/JoA2p5STHS8aO2nmyrwYKRojEc0=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Iced-Matcha-Latte-FT-RECIPE0622-2000-9c2e116d3bc54bdaacda10e62e8e0205.jpg",
+        ratio: "1-2 tsp matcha, cold water, cold milk, ice",
+        steps: [
+          "Whisk matcha with a small amount of cold water until smooth.",
+          "Fill glass with ice.",
+          "Add cold milk, then whisked matcha.",
+          "Stir well."
+        ],
+        tips: [
+          "Sift matcha to avoid clumps.",
+          "Use cold, fresh milk.",
+          "Adjust matcha strength to taste."
+        ],
+        videoLink: "https://www.youtube.com/results?search_query=how+to+make+iced+matcha+latte"
+      }
+    ];
+
+    // Tabs
+    const homeTab = document.getElementById('homeTab');
+    const learningTab = document.getElementById('learningTab');
+    const testingTab = document.getElementById('testingTab');
+
+    const homeSection = document.getElementById('homeSection');
+    const learningSection = document.getElementById('learningSection');
+    const testingSection = document.getElementById('testingSection');
+
+    function showSection(section) {
+      homeSection.style.display = 'none';
+      learningSection.style.display = 'none';
+      testingSection.style.display = 'none';
+
+      homeTab.classList.remove('active');
+      learningTab.classList.remove('active');
+      testingTab.classList.remove('active');
+
+      if (section === 'home') {
+        homeSection.style.display = 'block';
+        homeTab.classList.add('active');
+      } else if (section === 'learning') {
+        learningSection.style.display = 'block';
+        learningTab.classList.add('active');
+      } else if (section === 'testing') {
+        testingSection.style.display = 'block';
+        testingTab.classList.add('active');
+      }
+    }
+
+    homeTab.addEventListener('click', () => showSection('home'));
+    learningTab.addEventListener('click', () => showSection('learning'));
+    testingTab.addEventListener('click', () => showSection('testing'));
+
+    // Default to Home on load
+    showSection('home');
+
+    // Home Section
+    const drinkGrid = document.querySelector('.drink-grid');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const closeBtn = document.getElementById('closeBtn');
+    const drinkNameEl = document.getElementById('drinkName');
+    const drinkImageEl = document.getElementById('drinkImage');
+    const drinkRatioEl = document.getElementById('drinkRatio');
+    const drinkStepsEl = document.getElementById('drinkSteps');
+    const drinkTipsEl = document.getElementById('drinkTips');
+    const videoContainer = document.getElementById('videoContainer');
+    const videoLink = document.getElementById('videoLink');
+
+    drinksData.forEach(drink => {
+      const card = document.createElement('div');
+      card.className = 'drink-card';
+      card.innerHTML = `
+        <div class="drink-icon">${drink.icon}</div>
+        <h2>${drink.name}</h2>
+      `;
+      card.addEventListener('click', () => openModal(drink));
+      drinkGrid.appendChild(card);
+    });
+
+    function openModal(drink) {
+      drinkNameEl.textContent = drink.name;
+      drinkRatioEl.textContent = drink.ratio;
+      drinkStepsEl.innerHTML = '';
+      drinkTipsEl.innerHTML = '';
+
+      if (drink.image) {
+        drinkImageEl.src = drink.image;
+        drinkImageEl.alt = drink.name;
+        drinkImageEl.style.display = 'block';
+      } else {
+        drinkImageEl.style.display = 'none';
+      }
+
+      drink.steps.forEach(step => {
+        const li = document.createElement('li');
+        li.textContent = step;
+        drinkStepsEl.appendChild(li);
+      });
+
+      drink.tips.forEach(tip => {
+        const li = document.createElement('li');
+        li.textContent = tip;
+        drinkTipsEl.appendChild(li);
+      });
+
+      if (drink.videoLink) {
+        videoLink.href = drink.videoLink;
+        videoContainer.style.display = 'block';
+      } else {
+        videoContainer.style.display = 'none';
+      }
+
+      modalOverlay.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modalOverlay.style.display = 'none';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        closeModal();
+      }
+    });
+
+    // Learning Section (Comparison Tool)
+    const compareSelect1 = document.getElementById('compareSelect1');
+    const compareSelect2 = document.getElementById('compareSelect2');
+    const compareResults = document.getElementById('compareResults');
+
+    // Populate select options
+    drinksData.forEach(drink => {
+      const opt1 = document.createElement('option');
+      opt1.value = drink.name;
+      opt1.textContent = drink.name;
+      compareSelect1.appendChild(opt1);
+
+      const opt2 = document.createElement('option');
+      opt2.value = drink.name;
+      opt2.textContent = drink.name;
+      compareSelect2.appendChild(opt2);
+    });
+
+    function updateComparison() {
+      compareResults.innerHTML = '';
+      const drink1Name = compareSelect1.value;
+      const drink2Name = compareSelect2.value;
+
+      if (drink1Name && drink2Name && drink1Name !== drink2Name) {
+        const d1 = drinksData.find(d => d.name === drink1Name);
+        const d2 = drinksData.find(d => d.name === drink2Name);
+
+        const card1 = createCompareCard(d1, "Drink 1");
+        const card2 = createCompareCard(d2, "Drink 2");
+        compareResults.appendChild(card1);
+        compareResults.appendChild(card2);
+      }
+    }
+
+    function createCompareCard(drink, title) {
+      const div = document.createElement('div');
+      div.className = 'drink-compare-card';
+      div.innerHTML = `
+        <h3>${title}: ${drink.name}</h3>
+        <p><strong>Ratio:</strong> ${drink.ratio}</p>
+        <p><strong>Key Steps:</strong></p>
+        <ul>${drink.steps.map(s => `<li>${s}</li>`).join('')}</ul>
+      `;
+      return div;
+    }
+
+    compareSelect1.addEventListener('change', updateComparison);
+    compareSelect2.addEventListener('change', updateComparison);
+
+    // Testing Section (Quiz)
+    const quizQuestion = document.getElementById('quizQuestion');
+    const quizChoices = document.getElementById('quizChoices');
+    const quizFeedback = document.getElementById('quizFeedback');
+    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+
+    let quizCurrentQuestion = 0;
+    const quizTotalQuestions = 15;
+    let quizScore = 0;
+    let usedDrinksForQuiz = [];
+
+    function generateQuizQuestion() {
+      quizFeedback.textContent = '';
+
+      if (quizCurrentQuestion === quizTotalQuestions) {
+        endQuiz();
+        return;
+      }
+
+      let randomDrink;
+      do {
+        randomDrink = drinksData[Math.floor(Math.random() * drinksData.length)];
+      } while (usedDrinksForQuiz.includes(randomDrink) && usedDrinksForQuiz.length < drinksData.length);
+
+      usedDrinksForQuiz.push(randomDrink);
+
+      const correctAnswer = randomDrink.ratio;
+      quizQuestion.textContent = `Question ${quizCurrentQuestion + 1}/${quizTotalQuestions}: What is the ratio/ingredients of a ${randomDrink.name}?`;
+
+      let answers = [correctAnswer];
+      while (answers.length < 4) {
+        const randomOther = drinksData[Math.floor(Math.random() * drinksData.length)].ratio;
+        if (!answers.includes(randomOther)) {
+          answers.push(randomOther);
+        }
+      }
+
+      answers = answers.sort(() => Math.random() - 0.5);
+
+      quizChoices.innerHTML = '';
+      answers.forEach(ans => {
+        const btn = document.createElement('button');
+        btn.textContent = ans;
+        btn.addEventListener('click', () => {
+          if (ans === correctAnswer) {
+            quizFeedback.textContent = 'Correct!';
+            quizFeedback.style.color = 'green';
+            quizScore++;
+          } else {
+            quizFeedback.textContent = `Incorrect! The correct ratio is: ${correctAnswer}`;
+            quizFeedback.style.color = 'red';
+          }
+        });
+        quizChoices.appendChild(btn);
+      });
+
+      quizCurrentQuestion++;
+    }
+
+    function endQuiz() {
+      quizQuestion.textContent = `Quiz Complete! You scored ${quizScore} out of ${quizTotalQuestions}.`;
+      quizChoices.innerHTML = '';
+      quizFeedback.textContent = '';
+      nextQuestionBtn.style.display = 'none';
+    }
+
+    nextQuestionBtn.addEventListener('click', generateQuizQuestion);
+
+    generateQuizQuestion();
+  </script>
+</body>
+</html>
